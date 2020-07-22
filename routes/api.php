@@ -14,6 +14,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/user/login', 'AuthController@login');
+Route::post('/user/register', 'AuthController@register');
+
+Route::middleware('jwt.auth')->get('/user', function (Request $request) {
+    return auth('api')->user();
+});
+
+Route::middleware('jwt.auth')->group(function($router) {
+    $router->prefix('/expense')->group(function($router) {
+        $router->get('/', 'ExpenseController@index');
+        $router->post('/', 'ExpenseController@store');
+    });
 });
