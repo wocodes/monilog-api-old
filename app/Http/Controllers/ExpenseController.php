@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 
 class ExpenseController extends Controller
 {
+    public $user;
 
     public function __construct()
     {
@@ -16,15 +17,82 @@ class ExpenseController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing all expenses.
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        $expenses = Expense::all();
-        return response()->json($expenses);
+        $user = auth()->user();
+        $expenses = $user->expenses()->orderBy('date_logged', 'DESC')->get();
+        return response()->json(['message' => 'List of Expenses', 'data' => $expenses, 'status' => 'success']);
     }
+
+    /**
+     * Display a today's expenses.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function today()
+    {
+        $user = auth()->user();
+        $today = substr(Carbon::today(), 0, 10);
+
+        $expenses = $user->expenses()->orderBy('date_logged', 'DESC')->where('date_logged', 'LIKE', '%'.$today.'%')->get();
+        return response()->json(['message' => 'List of Expenses', 'data' => $expenses, 'status' => 'success']);
+    }
+
+    /**
+     * Display a listing of the month's expenses.
+     *
+     * @param $year
+     * @param $month
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function yearMonth($year, $month = null)
+    {
+        $user = auth()->user();
+        $monthVal = Carbon::parse($month)->month;
+        $monthVal = str_pad($monthVal, '2', 0, STR_PAD_LEFT);
+
+        if(!$monthVal) return response()->json(['message' => 'Invalid Month', 'status'=>'error'], 400);
+
+        $expenses = $user->expenses()->orderBy('date_logged', 'DESC');
+
+        if($year && !$month) {
+            $date = $year;
+            $expenses = $expenses->where('date_logged', 'LIKE', $date.'%')->get();
+        } else if($year && $month) {
+            $date = $year.'-'. $monthVal;
+            $expenses = $expenses->where('date_logged', 'LIKE', $date . '%')->get();
+        }
+
+        return response()->json(['message' => 'List of Expenses', 'data' => $expenses, 'status' => 'success']);
+    }
+
+
+    /**
+     * Display a listing of the month's expenses.
+     *
+     * @param $year
+     * @param $month
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function currentMonth()
+    {
+        $user = auth()->user();
+        $monthVal = Carbon::today()->month;
+        $monthVal = str_pad($monthVal, '2', 0, STR_PAD_LEFT);
+
+        if(!$monthVal) return response()->json(['message' => 'Invalid Month', 'status'=>'error'], 400);
+
+        $date = Carbon::today()->year.'-'. $monthVal;
+        $expenses = $user->expenses()->orderBy('date_logged', 'DESC')->where('date_logged', 'LIKE', $date . '%')->get();
+
+        return response()->json(['message' => 'List of Expenses', 'data' => $expenses, 'status' => 'success']);
+    }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -51,21 +119,30 @@ class ExpenseController extends Controller
                 'amount' => 'required',
             ]);
         } catch(ValidationException $e) {
-            return response()->json(['message' => $e->getMessage()], 400);
+            return response()->json([
+                'message' => 'Invalid data supplied.',
+                'data' => $e->getMessage(),
+                'status' => 'error'
+            ], 400);
         }
 
-        $storedExpense = Expense::create([
+        $user = auth()->user();
+        $storedExpense = $user->expenses()->firstOrCreate([
             'title' => $request->title,
-            'user_id' => auth()->user()->id,
             'amount' => $request->amount,
-            'category' => $request->category,
+            'description' => $request->description,
             'date_logged' => $request->date_logged ?: Carbon::now(),
+        ], [
+            'category' => $request->category,
         ]);
 
         if($storedExpense)
-            return response()->json($storedExpense);
+            return response()->json([
+                'message' => 'Expense logged successfully.',
+                'data' => $storedExpense,
+                'status' => 'success']);
         else
-            return response()->json(['error' => 'Error Creating Expense'], 400);
+            return response()->json(['message' => 'Error Creating Expense', 'status'=>'error'], 400);
     }
 
     /**

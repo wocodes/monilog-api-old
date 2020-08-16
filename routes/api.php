@@ -22,8 +22,11 @@ Route::middleware('jwt.auth')->get('/user', function (Request $request) {
 });
 
 Route::middleware('jwt.auth')->group(function($router) {
-    $router->prefix('/expense')->group(function($router) {
+    $router->prefix('/expenses')->group(function($router) {
         $router->get('/', 'ExpenseController@index');
+        $router->get('/today', 'ExpenseController@today');
+        $router->get('/current-month', 'ExpenseController@currentMonth');
+        $router->get('/{year}/{month?}', 'ExpenseController@yearMonth');
         $router->post('/', 'ExpenseController@store');
     });
 });

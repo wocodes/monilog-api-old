@@ -17,19 +17,22 @@ class AuthController extends Controller
         // try to auth and get the token using api authentication
         if (!$token = auth('api')->attempt($credentials)) {
             // if the credentials are wrong we send an unauthorized error in json format
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'Unauthorized', 'status' => 'error'], 401);
         }
 
         return response()->json([
-            'token' => $token,
-            'type' => 'bearer', // you can ommit this
-            'expires' => auth('api')->factory()->getTTL() * 60, // time to expiration
-
+            'credentials' => [
+                'user' => auth('api')->user(),
+                'token' => $token,
+                'type' => 'bearer', // you can ommit this
+                'expires' => auth('api')->factory()->getTTL() * 60 * 60 * 60, // time to expiration
+            ],
+            'message' => "Logged In. Redirecting you in a bit.",
+            'status' => 'success'
         ]);
     }
 
     public function register(Request $request) {
-
         try {
             $this->validate($request, [
                 'name' => 'required',
@@ -39,7 +42,7 @@ class AuthController extends Controller
 
             // check if user already exists
             $user = User::where('email', $request->email)->first();
-            if($user) return response()->json(['message' => 'User already exists'], 400);
+            if($user) return response()->json(['message' => 'User already exists', 'status' => 'error'], 400);
 
             $saved_user = User::create([
                 'name' => $request->name,
@@ -48,9 +51,9 @@ class AuthController extends Controller
             ]);
 
             if($saved_user)
-                return response()->json(['message', 'Registered']);
+                return response()->json(['message' => 'Registered. You may now login', 'status' => 'success']);
         } catch (ValidationException $e) {
-            return response()->json(['message' => $e->getMessage()], 400);
+            return response()->json(['message' => $e->getMessage(), 'type' => 'error'], 400);
         }
     }
 }
