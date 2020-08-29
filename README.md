@@ -22,7 +22,7 @@ Below is a list of our development team on Monilog - Api
 our base URL https://api-monilog.schoolly.co</p>
 <p>You are free to send feature requests to william.odiomonafe@gmail.com</p>
 <br>
-[x] Register <br>
+[ x ] Register <br>
 
 ```
 Endpoint: /api/user/register
@@ -33,7 +33,7 @@ Data {
         "password": "password"
      }
 ```
-[x] Login <br>
+[ x ] Login <br>
 
 ```
 Endpoint: /api/user/login
