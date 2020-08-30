@@ -45,41 +45,36 @@ Data {
         "password": "password"
      }
 ```
-- [x] Get all user's expenses (auth)
 ---
-
+- [x] Get all user's expenses (auth)
 ```
 Endpoint: /api/expenses/
 Method: GET
 Auth: Requires Bearer Access token
 ```
-- [x] Get user's expenses for today (auth)
 ---
-
+- [x] Get user's expenses for today (auth)
 ```
 Endpoint: /api/expenses/today
 Method: GET
 Auth: Requires Bearer Access token
 ```
-- [x] Get user's expenses for the current month (auth)
 ---
-
+- [x] Get user's expenses for the current month (auth)
 ```
 Endpoint: /api/expenses/current-month
 Method: GET
 Auth: Requires Bearer Access token
 ```
-- [x] Get user's expenses for a specific month and year (auth)
 ---
-
+- [x] Get user's expenses for a specific month and year (auth)
 ```
 Endpoint: /api/expenses/{year}/{month}
 Method: GET
 Auth: Requires Bearer Access token
 ```
-- [x] Get user's expenses for a specific year (auth)
 ---
-
+- [x] Get user's expenses for a specific year (auth)
 ```
 Endpoint: /api/expenses/{year}
 Method: GET
