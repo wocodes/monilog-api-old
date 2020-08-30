@@ -14,19 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/user/login', 'AuthController@login');
-Route::post('/user/register', 'AuthController@register');
+require_once 'users.php';
+
+require_once 'expenses.php';
+
+require_once 'income.php';
+
+//require_once 'budget.php';
 
 Route::middleware('jwt.auth')->get('/user', function (Request $request) {
     return auth('api')->user();
-});
-
-Route::middleware('jwt.auth')->group(function($router) {
-    $router->prefix('/expenses')->group(function($router) {
-        $router->get('/', 'ExpenseController@index');
-        $router->get('/today', 'ExpenseController@today');
-        $router->get('/current-month', 'ExpenseController@currentMonth');
-        $router->get('/{year}/{month?}', 'ExpenseController@yearMonth');
-        $router->post('/', 'ExpenseController@store');
-    });
 });
