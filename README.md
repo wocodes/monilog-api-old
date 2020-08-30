@@ -6,7 +6,7 @@
 
 <p>This is the official API for Monilog Finance Manager. 
 Monilog enables you monitor/log your finances on daily, weekly, monthly and annual basis. 
-The path to wealth entials proper finance management.</p>
+The path to wealth entails proper finance management.</p>
 
 
 ### Contributors
@@ -17,7 +17,7 @@ Below is a list of our development team on Monilog - Api
 </ul>
 
 
-### Available Enpoints/Todos
+### Available Endpoints/Todos
 <p>Below is a list of feature endpoints on Monilog Api. All enpoints can be accessed/consumed via 
 our base URL https://api-monilog.schoolly.co</p>
 <p>You are free to send feature requests to william.odiomonafe@gmail.com</p>
