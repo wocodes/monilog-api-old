@@ -18,7 +18,7 @@ Below is a list of our development team on Monilog - Api
 
 
 ### Available Endpoints/Todos
-<p>Below is a list of feature endpoints on Monilog Api. All enpoints can be accessed/consumed via 
+<p>Below is a list of feature endpoints on Monilog Api. All endpoints can be accessed/consumed via 
 our base URL https://api-monilog.schoolly.co</p>
 <p>You are free to send feature requests to william.odiomonafe@gmail.com</p>
 <br>
