@@ -22,6 +22,7 @@ Below is a list of our development team on Monilog - Api
 our base URL https://api-monilog.schoolly.co</p>
 <p>You are free to send feature requests to william.odiomonafe@gmail.com</p>
 <br>
+
 - [x] Register <br>
 
 ```
@@ -42,5 +43,40 @@ Data {
         "email": "johndoe@gmail",
         "password": "password"
      }
+```
+- [x] Get all user's expenses (auth) <br>
+
+```
+Endpoint: /api/expenses/
+Method: GET
+Auth: Requires Bearer Access token
+```
+- [x] Get user's expenses for today (auth) <br>
+
+```
+Endpoint: /api/expenses/today
+Method: GET
+Auth: Requires Bearer Access token
+```
+- [x] Get user's expenses for the current month (auth) <br>
+
+```
+Endpoint: /api/expenses/current-month
+Method: GET
+Auth: Requires Bearer Access token
+```
+- [x] Get user's expenses for a specific month and year (auth) <br>
+
+```
+Endpoint: /api/expenses/{year}/{month}
+Method: GET
+Auth: Requires Bearer Access token
+```
+- [x] Get user's expenses for a specific year (auth) <br>
+
+```
+Endpoint: /api/expenses/{year}
+Method: GET
+Auth: Requires Bearer Access token
 ```
 
