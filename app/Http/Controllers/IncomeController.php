@@ -47,7 +47,7 @@ class IncomeController extends Controller
             'user_id' => auth()->user()->id,
         ]);
         if($saved_income)
-            return response()->json(["message" => "Income Saved"]);
+            return response()->json(["message" => "Income Saved."]);
     }
 
     /**
