@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Expense;
+use App\Repositories\BudgetRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -10,9 +11,12 @@ use Illuminate\Validation\ValidationException;
 class ExpenseController extends Controller
 {
     public $user;
+    public $budgetRepository;
 
-    public function __construct()
+
+    public function __construct(BudgetRepository $budgetRepository)
     {
+        $this->budgetRepository = $budgetRepository;
 //        $this->middleware('jwt.auth');
     }
 
@@ -38,7 +42,7 @@ class ExpenseController extends Controller
         $user = auth()->user();
         $today = substr(Carbon::today(), 0, 10);
 
-        $expenses = $user->expenses()->orderBy('date_logged', 'DESC')->where('date_logged', 'LIKE', '%'.$today.'%')->get();
+        $expenses = $user->expenses()->orderBy('created_at', 'DESC')->where('date_logged', 'LIKE', '%'.$today.'%')->get();
         return response()->json(['message' => 'List of Expenses', 'data' => $expenses, 'status' => 'success']);
     }
 
@@ -113,22 +117,17 @@ class ExpenseController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $request->validate([
-                'title' => 'required',
-                'amount' => 'required',
-            ]);
-        } catch(ValidationException $e) {
-            return response()->json([
-                'message' => 'Invalid data supplied.',
-                'data' => $e->getMessage(),
-                'status' => 'error'
-            ], 400);
-        }
+
+        $this->validate($request, [
+            'title' => 'required_without:budget_id',
+            'amount' => 'required',
+            'budget_id' => 'numeric',
+        ]);
 
         $user = auth()->user();
         $storedExpense = $user->expenses()->firstOrCreate([
             'title' => $request->title,
+            'budget_id' => $request->budget_id,
             'amount' => $request->amount,
             'description' => $request->description,
             'date_logged' => $request->date_logged ?: Carbon::now(),
@@ -136,13 +135,19 @@ class ExpenseController extends Controller
             'category' => $request->category,
         ]);
 
-        if($storedExpense)
+        if($storedExpense) {
+            if($request->budget_id) {
+                $budget = $this->budgetRepository->find($request->budget_id);
+                $budget->logged_as_expense = 1;
+                $budget->save();
+            }
             return response()->json([
                 'message' => 'Expense logged successfully.',
                 'data' => $storedExpense,
                 'status' => 'success']);
-        else
-            return response()->json(['message' => 'Error Creating Expense', 'status'=>'error'], 400);
+        } else {
+            return response()->json(['message' => 'Error Creating Expense', 'status' => 'error'], 400);
+        }
     }
 
     /**

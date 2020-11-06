@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateIncomesTable extends Migration
+class CreateBudgetsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateIncomesTable extends Migration
      */
     public function up()
     {
-        Schema::create('incomes', function (Blueprint $table) {
+        Schema::create('budgets', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
             $table->string('title');
-            $table->decimal('amount');
-            $table->dateTime('date_logged')->useCurrent();
             $table->text('description')->nullable();
+            $table->timestamp('for_month')->useCurrent();
+            $table->bigInteger('amount');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
@@ -33,6 +33,6 @@ class CreateIncomesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('incomes');
+        Schema::dropIfExists('budgets');
     }
 }

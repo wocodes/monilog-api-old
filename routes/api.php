@@ -20,7 +20,7 @@ require_once 'expenses.php';
 
 require_once 'income.php';
 
-//require_once 'budget.php';
+require_once 'budget.php';
 
 Route::middleware('jwt.auth')->get('/user', function (Request $request) {
     return auth('api')->user();
