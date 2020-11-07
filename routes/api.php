@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+require_once 'home.php';
+
 require_once 'users.php';
 
 require_once 'expenses.php';

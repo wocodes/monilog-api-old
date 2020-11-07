@@ -11,7 +11,7 @@ interface BaseRepositoryInterface
      * Get all budgets
      * @return mixed
      */
-    public function getAll();
+    public function all();
 
     public function find($id);
 

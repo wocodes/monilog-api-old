@@ -85,15 +85,25 @@ class ExpenseController extends Controller
     public function currentMonth()
     {
         $user = auth()->user();
-        $monthVal = Carbon::today()->month;
-        $monthVal = str_pad($monthVal, '2', 0, STR_PAD_LEFT);
+//        $monthVal = Carbon::today()->month;
+//        $monthVal = str_pad($monthVal, '2', 0, STR_PAD_LEFT);
+//
+//        if(!$monthVal) return response()->json(['message' => 'Invalid Month', 'status'=>'error'], 400);
+//
+//        $date = Carbon::today()->year.'-'. $monthVal;
 
-        if(!$monthVal) return response()->json(['message' => 'Invalid Month', 'status'=>'error'], 400);
 
-        $date = Carbon::today()->year.'-'. $monthVal;
-        $expenses = $user->expenses()->orderBy('date_logged', 'DESC')->where('date_logged', 'LIKE', $date . '%')->get();
+        $expenses = [];
+        $expenses['current'] = $user->expenses()->with('budget')->orderBy('date_logged', 'DESC')->whereMonth('date_logged', Carbon::now())->get();
 
-        return response()->json(['message' => 'List of Expenses', 'data' => $expenses, 'status' => 'success']);
+        $yearly_expense = $user->expenses()->whereYear('date_logged', Carbon::now())->get();
+        $expenses['yearly_count'] = $yearly_expense->count();
+        $expenses['yearly_amount'] = $yearly_expense->sum('amount');
+
+        $expenses['overall_count'] = $user->expenses()->get()->count();
+        $expenses['overall_amount'] = $user->expenses()->get()->sum('amount');
+
+        return response()->json($expenses);
     }
 
 

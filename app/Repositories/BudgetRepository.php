@@ -25,6 +25,6 @@ class BudgetRepository extends BaseRepository implements BudgetRepositoryInterfa
 
     public function unlogged() : Collection
     {
-        return $this->model->where('logged_as_expense', 1)->get();
+        return $this->model->where('logged_as_expense', 0)->get();
     }
 }

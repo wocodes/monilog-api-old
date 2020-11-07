@@ -25,7 +25,7 @@ class BudgetController extends Controller
      */
     public function index()
     {
-        $budgets = $this->budgetRepository->getAll();
+        $budgets = $this->budgetRepository->all();
         return response()->json($budgets);
     }
 
@@ -42,7 +42,7 @@ class BudgetController extends Controller
             "title" => "required",
             "amount" => "numeric",
             "description" => "nullable",
-            "for_month" => "nullable"
+            "for" => "nullable"
         ]);
 
         $validatedData['user_id'] = auth()->user()->id;
@@ -103,7 +103,6 @@ class BudgetController extends Controller
     }
 
 
-
     /**
      * Display a listing of the month's expenses.
      *
@@ -114,15 +113,25 @@ class BudgetController extends Controller
     public function currentMonth()
     {
         $user = auth()->user();
-        $monthVal = Carbon::today()->month;
-        $monthVal = str_pad($monthVal, '2', 0, STR_PAD_LEFT);
+//        $monthVal = Carbon::today()->month;
+//        $monthVal = str_pad($monthVal, '2', 0, STR_PAD_LEFT);
 
-        if(!$monthVal) return response()->json(['message' => 'Invalid Month', 'status'=>'error'], 400);
+//        if(!$monthVal) return response()->json(['message' => 'Invalid Month', 'status'=>'error'], 400);
 
-        $date = Carbon::today()->year.'-'. $monthVal;
-        $budgets = $user->budgets()->orderBy('for_month', 'DESC')->where('for_month', 'LIKE', $date . '%')->get();
+//        $date = Carbon::today()->year.'-'. $monthVal;
 
-        return response()->json(['message' => 'List of Budgets', 'data' => $budgets, 'status' => 'success']);
+
+        $budgets = [];
+        $budgets['current'] = $user->budgets()->orderBy('for', 'DESC')->whereMonth('for', Carbon::now())->get();
+
+        $yearly_budget = $user->budgets()->whereYear('for', Carbon::now())->get();
+        $budgets['yearly_count'] = $yearly_budget->count();
+        $budgets['yearly_amount'] = $yearly_budget->sum('amount');
+
+        $budgets['overall_count'] = $user->budgets()->get()->count();
+        $budgets['overall_amount'] = $user->budgets()->get()->sum('amount');
+
+        return response()->json($budgets);
     }
 
 }

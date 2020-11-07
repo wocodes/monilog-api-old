@@ -17,7 +17,7 @@ interface BudgetRepositoryInterface
      * Get all Budgets
      * @return mixed
      */
-    public function getAll();
+    public function all();
 
     /**
      * @return mixed

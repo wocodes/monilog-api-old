@@ -25,7 +25,7 @@ class AuthController extends Controller
                 'user' => auth('api')->user(),
                 'token' => $token,
                 'type' => 'bearer', // you can ommit this
-                'expires' => auth('api')->factory()->getTTL() * 60 * 60 * 60, // time to expiration
+                'expires' => auth('api')->factory()->getTTL()
             ],
             'message' => "Logged In. Redirecting you in a bit.",
             'status' => 'success'
