@@ -127,11 +127,10 @@ class ExpenseController extends Controller
      */
     public function store(Request $request)
     {
-
         $this->validate($request, [
             'title' => 'required_without:budget_id',
             'amount' => 'required',
-            'budget_id' => 'numeric',
+            'budget_id' => 'numeric|nullable',
         ]);
 
         $user = auth()->user();
