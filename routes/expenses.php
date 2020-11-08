@@ -10,5 +10,6 @@ Route::middleware('jwt.auth')->group(function($router) {
         $router->get('/current-month', 'ExpenseController@currentMonth');
         $router->get('/{year}/{month?}', 'ExpenseController@yearMonth');
         $router->post('/', 'ExpenseController@store');
+        $router->delete('/{id}', 'ExpenseController@destroy');
     });
 });

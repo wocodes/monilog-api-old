@@ -196,11 +196,16 @@ class ExpenseController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Expense  $expense
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Expense $expense)
+    public function destroy(Request $request)
     {
-        //
+        $user = auth()->user();
+        $expense = $user->expenses()->find($request->id);
+        if(!$expense) return response()->json("No expense found", 401);
+        $expense->delete();
+
+        return response()->json("Deleted expense");
     }
 }
